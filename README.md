@@ -18,7 +18,7 @@ doing so, run ./setup.sh.
 
 #Enter to GUI  
 login admin  
-pass: you can see in tower_setup_conf.yml  
+pass: admin   
 
 #Production  
 fill ip in deploy/inventories/production  
