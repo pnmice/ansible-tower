@@ -1,0 +1,6 @@
+admin_password: admin
+database: internal
+munin_password: admin
+pg_password: bhL2Z5unb8gNyG9TCdfm3LEDJonbiUBN4G7APyfd
+primary_machine: localhost
+redis_password: t9iHTgBuRuzPjS89Rw39ZEPnBfFESbVWnRafgmys

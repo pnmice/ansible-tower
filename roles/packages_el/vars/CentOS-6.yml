@@ -1,0 +1,7 @@
+---
+
+epel_release_url: '{{epel_release_url_el6}}'
+el_dependencies: '{{el6_dependencies}}'
+yum_repo_urls:
+    - 'http://download.opensuse.org/repositories/home:cedric-vincent/CentOS_CentOS-6/home:cedric-vincent.repo'
+    - 'https://copr.fedoraproject.org/coprs/jlaska/redis-28/repo/epel-6/jlaska-redis-28-epel-6.repo'

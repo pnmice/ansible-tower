@@ -1,0 +1,20 @@
+  - name: update apt packages
+    sudo: yes
+    apt: update_cache=yes
+
+  - name: install essential software
+    sudo: yes
+    apt: name={{ item }} state=present
+    with_items:
+      - git
+      - tree
+      - wget
+      - vim
+      - curl
+      - python
+      - python-pip
+      - s3cmd
+      - ansible
+      - default-jre
+      - htop
+

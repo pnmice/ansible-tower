@@ -1,0 +1,54 @@
+---
+# Indicate the path to the RHUI repository file
+redhat_rhui_repo_path: '/etc/yum.repos.d/redhat-rhui.repo'
+
+# Specify RHEL RHUI repositories to enable (used in vars/*.yml).
+redhat_rhui_repos: []
+
+# Indicate the path to the subscription-manager repository file
+redhat_rhsm_repo_path: '/etc/yum.repos.d/redhat.repo'
+redhat_rhsm_cert_path: '/etc/pki/consumer/cert.pem'
+redhat_rhsm_conf_path: '/etc/rhsm/rhsm.conf'
+
+# Specify RHEL subscription-manager repositories to enable (used in vars/*.yml).
+redhat_rhsm_repos: []
+
+# Specify the format to use when installing tower with the 'yum' module.
+tower_package_rpm: '{{ tower_package_name }} == {{ tower_package_version }}'
+
+# Specify epel-release RPM locations (used in vars/*.yml).
+epel_release_url_el6: 'http://dl.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm'
+epel_release_url_el7: 'http://dl.fedoraproject.org/pub/epel/7/x86_64/e/epel-release-7-5.noarch.rpm'
+
+el6_dependencies:
+  - libselinux-python
+  - policycoreutils-python
+  - pyOpenSSL
+  - python-gevent
+  - python-ldap
+  - python-passlib
+  - python-pip
+  - python-psutil
+  - python-psycopg2
+  - python-setuptools
+  - setools-libs-python
+  - yum-utils
+
+el7_dependencies:
+  - iptables-services
+  - libselinux-python
+  - policycoreutils-python
+  - pyOpenSSL
+  - python-gevent
+  - python-ldap
+  - python-passlib
+  - python-pip
+  - python-psutil
+  - python-psycopg2
+  - python-setuptools
+  - setools-libs
+  - yum-utils
+
+el_obsolete:
+  - rabbitmq-server
+

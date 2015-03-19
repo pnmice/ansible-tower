@@ -1,0 +1,6 @@
+---
+- hosts: tower
+  remote_user: ubuntu
+  roles:
+    - essential
+    - tower

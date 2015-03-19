@@ -1,0 +1,3 @@
+---
+# Specify the tower deb name used when installing tower.
+tower_package_deb: '{{ tower_package_name }}={{ tower_package_version }}-*'

@@ -1,0 +1,99 @@
+---
+# Tasks to install required packages for EL distros
+
+- include_vars: '{{ item }}'
+  with_first_found:
+    - files:
+        - '{{ ansible_distribution }}-{{ ansible_distribution_version }}.yml'           # CentOS-6.5
+        - '{{ ansible_os_family }}-{{ ansible_distribution_version }}.yml'              # RedHat-6.5
+        - '{{ ansible_distribution }}-{{ ansible_distribution_major_version }}.yml'     # CentOS-6
+        - '{{ ansible_os_family }}-{{ ansible_distribution_major_version }}.yml'        # RedHat-6
+        - '{{ ansible_distribution }}.yml'                                              # CentOS
+        - '{{ ansible_os_family }}.yml'                                                 # RedHat
+        - 'default.yml'
+      paths: '../vars'
+
+- name: install epel-release
+  shell: rpm -q epel-release || rpm -Uvh '{{epel_release_url}}'
+  register: epel_installed
+  changed_when: "'not installed' in epel_installed.stdout"
+
+- name: determine if rhui repository exists
+  stat:
+    path: '{{ redhat_rhui_repo_path }}'
+  changed_when: false
+  register: rhui_repo
+
+- name: update rh-amazon-rhui-client (RHEL EC2 only)
+  yum: name=rh-amazon-rhui-client state=latest
+  when: ansible_distribution == 'RedHat' and rhui_repo.stat.exists
+
+- name: enable rhui repositories
+  ini_file:
+    dest: '{{ redhat_rhui_repo_path }}'
+    section: '{{ item }}'
+    option: enabled
+    value: 1
+  when: ansible_distribution == 'RedHat' and rhui_repo.stat.exists
+  with_items: redhat_rhui_repos
+
+- name: determine if rhsm repository exists
+  stat:
+    path: '{{ redhat_rhsm_repo_path }}'
+  changed_when: false
+  register: rhsm_repo
+
+- name: determine if rhsm system cert exists
+  stat:
+    path: '{{ redhat_rhsm_cert_path }}'
+  changed_when: false
+  register: rhsm_cert
+
+- name: enable rhsm repositories
+  command: subscription-manager repos --enable '{{ item }}'
+  when: ansible_distribution == 'RedHat' and rhsm_repo.stat.exists and rhsm_cert.stat.exists
+  with_items: redhat_rhsm_repos
+
+- name: Remove Django if installed through yum.
+  yum:
+    name: '{{ item }}'
+    state: absent
+  with_items:
+    - Django
+    - Django14
+    - python-django
+
+- name: install required packages
+  yum: name={{ item }} state=installed
+  with_items: el_dependencies
+
+- name: Remove obsolete packages.
+  yum:
+    name: '{{ item }}'
+    state: absent
+  with_items: el_obsolete
+
+- name: install yum repositories
+  get_url: url='{{item}}' dest='/etc/yum.repos.d/'
+  when: yum_repo_urls is defined
+  with_items: yum_repo_urls
+
+- name: Upgrade pip using pip.
+  pip:
+    name: pip>=1.5,<1.6
+    state: latest
+
+- name: Install django 1.6.x using pip.
+  pip:
+    name: django>=1.6.7,<1.7
+    state: latest
+
+- name: install awx yum repository
+  template: src=yum_repo.j2 dest=/etc/yum.repos.d/awx.repo
+  register: yum_repo
+
+- name: yum clean cached awx repository information
+  command: yum clean all --disablerepo=* --enablerepo=ansibleworks-awx
+
+- name: install awx RPM
+  yum: name='{{tower_package_rpm}}' enablerepo=ansibleworks-awx disable_gpg_check=yes state=latest

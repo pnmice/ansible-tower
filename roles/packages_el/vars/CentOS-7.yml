@@ -1,0 +1,6 @@
+---
+
+epel_release_url: '{{epel_release_url_el7}}'
+el_dependencies: '{{el7_dependencies}}'
+yum_repo_urls:
+    - 'http://download.opensuse.org/repositories/home:cedric-vincent/CentOS_7/home:cedric-vincent.repo'
